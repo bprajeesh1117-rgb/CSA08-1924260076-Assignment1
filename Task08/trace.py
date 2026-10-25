@@ -1,18 +1,34 @@
-from decimal import Decimal
 
-def debug_milk_calculation(litres, fat, snf):
-    print(f"[DEBUG] Input Litres: {litres}, Fat: {fat}, SNF: {snf}")
-    base_rate = Decimal("30.00")
-    
-    fat_diff = fat - Decimal("3.5")
-    snf_diff = snf - Decimal("8.5")
-    
-    rate = base_rate + (fat_diff / Decimal("0.1") * Decimal("0.40")) + (snf_diff / Decimal("0.1") * Decimal("0.30"))
-    print(f"[DEBUG] Calculated Rate per Litre: {rate}")
-    
-    total_amount = rate * litres
-    print(f"[DEBUG] Total Payout Amount: {total_amount}")
-    return total_amount
+"""Task 8: Hand trace of three milk payment entries."""
 
-if __name__ == "__main__":
-    debug_milk_calculation(Decimal("10.0"), Decimal("4.0"), Decimal("8.8"))
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import milkrate
+
+entries = [
+    (10, 3.5, 8.5),
+    (8.5, 4.2, 8.7),
+    (12, 3.1, 8.3),
+]
+
+total = 0.0
+
+print("TASK 8 - HAND TRACE")
+print("-" * 65)
+print(f"{'Entry':<8}{'Litres':>8}{'Fat':>8}{'SNF':>8}{'Rate':>10}{'Payment':>12}")
+
+for number, (litres, fat, snf) in enumerate(entries, start=1):
+    rate = milkrate.rate_per_litre(fat, snf)
+    payment = milkrate.payout(litres, fat, snf)
+    total += payment
+
+    print(
+        f"{number:<8}{litres:>8.1f}{fat:>8.1f}{snf:>8.1f}"
+        f"{rate:>10.2f}{payment:>12.2f}"
+    )
+
+print("-" * 65)
+print(f"Ten-day total for these entries: Rs. {total:.2f}")
